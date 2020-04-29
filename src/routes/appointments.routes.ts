@@ -14,20 +14,24 @@ appointmentsRouter.get('/', (req, res) => {
 });
 
 appointmentsRouter.post('/', (req, res) => {
-    const { provider, date } = req.body;
+    try {
+        const { provider, date } = req.body;
 
-    const parsedDate = parseISO(date);
+        const parsedDate = parseISO(date);
 
-    const createAppointment = new CreateAppointmentService(
-        appointmentsRepository,
-    );
+        const createAppointment = new CreateAppointmentService(
+            appointmentsRepository,
+        );
 
-    const appointment = createAppointment.execute({
-        date: parsedDate,
-        provider,
-    });
+        const appointment = createAppointment.execute({
+            date: parsedDate,
+            provider,
+        });
 
-    return res.json(appointment);
+        return res.json(appointment);
+    } catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
 });
 
 export default appointmentsRouter;
